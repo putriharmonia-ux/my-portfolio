@@ -6,9 +6,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui
 import { Badge } from '../ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { ExternalLink, Code, Heart, ChevronLeft, ChevronRight } from 'lucide-react';
-import { socialLinks } from '../../config/socialLinks';
 import { lightStars, darkStars, specialStars } from '../../assets/stars';
 import { comingSoon } from '../../assets';
+import dashboardImage from '../../assets/dashboard.png';
+import lampImage from '../../assets/lamp.png';
+import internshipImage from '../../assets/internship.png';
+import arduinoImage from '../../assets/arduino.png';
+import aiImage from '../../assets/ai.png';
 
 const Projects = () => {
   const { isDarkMode } = useDarkMode();
@@ -25,7 +29,7 @@ const Projects = () => {
   // carousel state
   const [currentPage, setCurrentPage] = useState(0);
   const [direction, setDirection] = useState<'left' | 'right'>('right');
-  const projectsPerPage = 4;
+  const projectsPerPage = 6;
 
   const containerRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef(false);
@@ -227,38 +231,55 @@ const Projects = () => {
   }, [draggedStar]);
 
   // project data - these are the main cards
-  const projects = [
+  const projects: Array<{
+    title: string;
+    description: string;
+    technologies?: string[];
+    icon: string;
+    detailsUrl: string;
+    githubUrl?: string;
+  }> = [
     {
-      title: "Project One",
-      description: "A brief description of your first project. Highlight the key features and what makes it unique.",
-      technologies: ["React", "TypeScript", "Node.js", "MongoDB"],
-      icon: comingSoon,
-      detailsUrl: "/projects/project-one",
-      githubUrl: socialLinks.repositories.projectOne
+      title: "Airport Passenger Insight",
+      description: "An interactive airport passenger analytics dashboard developed using Looker Studio, featuring Passenger Behavior and Demography to explore passenger travel patterns and demographic profiles through clear and data-driven visualizations.",
+      technologies: ["Looker Studio", "Google Sheets", "Business Intelligence", "Data Analytics"],
+      icon: dashboardImage,
+      detailsUrl: "https://datastudio.google.com/reporting/b085ecd9-c9e3-4986-9b22-c16fed94ffa0"
+    },
+      {
+      title: "UPG Passenger Analytics Dashboard",
+      description: "Developed an interactive dashboard for passenger data visualization, analysis, and demographic exploration. Integrated data filtering and interactive charts using Looker Studio and Google Sheets to present actionable insights and support data-driven decision-making.",
+      technologies: ["Looker Studio", "Google Sheets", "Business Intelligence", "Data Analytics"],
+      icon: dashboardImage,
+      detailsUrl: "https://datastudio.google.com/reporting/930919db-39a3-423f-8bc1-0d71ebdca98f",
+    },
+      {
+      title: "Arduino-Based Internet of Things (IoT) Appropriate Technology Training for High School Students",
+      description: "A training program introducing high school students to appropriate technology through Arduino IoT projects. Participants learned electronics, sensors, and microcontroller programming to build simple IoT prototypes for everyday problems.",
+      technologies: ["Arduino", "Internet of Things"],
+      icon: arduinoImage,
+      detailsUrl: "https://youtu.be/idI8iC_3Tcg?si=05f0k1TcvsKJVwwf"
     },
     {
-      title: "Project Two",
-      description: "A brief description of your second project. Highlight the key features and what makes it unique.",
-      technologies: ["Python", "Flask", "PostgreSQL", "Docker"],
-      icon: comingSoon,
-      detailsUrl: "/projects/project-two",
-      githubUrl: socialLinks.repositories.projectTwo
+      title: "AI Agent for E-Commerce and Omnichannel Software Training Program",
+      description: "A training program on AI agents designed to help participants automate customer service, product management, and sales workflows. The session covered practical use cases for connecting sales channels to improve efficiency.",
+      technologies: ["AI Agent", "Omnichannel Software"],
+      icon: aiImage,
+      detailsUrl: "https://youtu.be/WocggmgBlLc?si=9pBXVCWJEhZCQXHj"
     },
     {
-      title: "Project Three",
-      description: "A brief description of your third project. Highlight the key features and what makes it unique.",
-      technologies: ["JavaScript", "Express", "AWS", "Tailwind CSS"],
-      icon: comingSoon,
-      detailsUrl: "/projects/project-three",
-      githubUrl: socialLinks.repositories.projectThree
+      title: "Capstone Design - Cargo Lift at PT. Mersifarma Tirmaku Mercusana",
+      description: "A capstone project focused on designing an integrated cargo lift system for PT. Mersifarma Tirmaku Mercusana, with an emphasis on developing an efficient material handling solution to support internal logistics and operational workflows.",
+      technologies: ["Capstone Design Project"],
+      icon: lampImage,
+      detailsUrl: "https://canva.link/m4abz5plliuj87m"
     },
     {
-      title: "Project Four",
-      description: "A brief description of your fourth project. Highlight the key features and what makes it unique.",
-      technologies: ["C++", "CMake", "OpenGL"],
-      icon: comingSoon,
-      detailsUrl: "/projects/project-four",
-      githubUrl: socialLinks.repositories.projectFour
+      title: "Internship at PT. Dirgantara Indonesia - Maintenance, Assembly, and Modification Division",
+      description: "An internship project focused on observing aircraft maintenance, assembly, and modification processes. The project involved designing a digital maintenance worksheet prototype using Microsoft Access to centralize documentation and improve data management.",
+      technologies: ["Internship Presentation", "Prototype"],
+      icon: internshipImage,
+      detailsUrl: "https://canva.link/wk1c1il71tyeykv"
     }
   ];
 
@@ -481,7 +502,7 @@ const Projects = () => {
                 </CardHeader>
                 <CardContent style={{ display: 'flex', flexDirection: 'column' }}>
                   <div className="flex flex-wrap gap-2 mb-4" style={{ flex: '1 0 auto' }}>
-                    {project.technologies.map((tech, techIndex) => (
+                    {(project.technologies ?? []).map((tech, techIndex) => (
                       <Badge key={techIndex} variant="secondary" className="text-xs"
                         style={{
                           backgroundColor: themeColors.interactive.primary,
@@ -494,14 +515,40 @@ const Projects = () => {
                     ))}
                   </div>
                   <div className="flex gap-3" style={{ marginTop: 'auto', paddingTop: '8px' }}>
-                    <Link to={project.detailsUrl} className="project-btn flex items-center gap-1" style={{ textDecoration: 'none', color: 'white' }} aria-label={`View ${project.title} project details`}>
-                      <ExternalLink className="h-4 w-4" aria-hidden="true" />
-                      Details
-                    </Link>
-                    <a href={project.githubUrl} className="project-btn-outline flex items-center gap-1" style={{ textDecoration: 'none' }} target="_blank" rel="noopener noreferrer" aria-label={`View ${project.title} source code on GitHub`}>
-                      <Code className="h-4 w-4" aria-hidden="true" />
-                      Code
-                    </a>
+                    {project.detailsUrl.startsWith("http") ? (
+                      <a
+                        href={project.detailsUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="project-btn flex items-center gap-1"
+                        style={{ textDecoration: "none", color: "white" }}
+                      >
+                        <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                        Details
+                      </a>
+                    ) : (
+                      <Link
+                        to={project.detailsUrl}
+                        className="project-btn flex items-center gap-1"
+                        style={{ textDecoration: "none", color: "white" }}
+                      >
+                        <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                        Details
+                      </Link>
+                    )}
+                    {project.githubUrl && (
+                      <a
+                        href={project.githubUrl}
+                        className="project-btn-outline flex items-center gap-1"
+                        style={{ textDecoration: 'none' }}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`View ${project.title} Code`}
+                      >
+                        <Code className="h-4 w-4" aria-hidden="true" />
+                        Code
+                      </a>
+                    )}
                   </div>
                 </CardContent>
               </Card>

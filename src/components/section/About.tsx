@@ -1,51 +1,37 @@
 import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import AsciiMorphText from '../AsciiMorphText';
 import TypewriterCarousel from '../TypewriterCarousel';
+import AsciiKaomoji from '../AsciiKaomoji';
+import { ASCII_GLYPHS } from '../../config/asciiArt';
+import journalPortrait from '../../assets/journal-portrait.jpeg';
 import { useDarkMode } from '../../contexts/DarkModeContext';
 import { useThemeColors, withAlpha } from '../../hooks/useThemeColors';
-import { aboutMeJournalWebp800, aboutMeJournalWebp400, profile1, profile2, profile3, stickers as stickerImages } from '../../assets';
+import { aboutMeJournalWebp800, aboutMeJournalWebp400, stickers as stickerImages } from '../../assets';
 
 
 const About = () => {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [asciiText, setAsciiText] = useState('');
-  const [showProfileModal, setShowProfileModal] = useState(false);
-  const [isClosing, setIsClosing] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const sectionRef = useRef<HTMLDivElement>(null);
   const { isDarkMode } = useDarkMode();
   const themeColors = useThemeColors();
 
   const roles = [
-    'Software Engineer',
-    'Full-Stack Developer',
-    'Systems Engineer',
-    'Frontend Developer',
+  // Core & Foundation
+  'Industrial Engineering Graduate',
+  'Process Improvement Enthusiast',
+  'Information Systems Enthusiast',
+  'Aspiring Data Analyst',
   ];
 
-  const profileImages = [
-    { src: profile1, caption: "photo 1" },
-    { src: profile2, caption: "photo 2" },
-    { src: profile3, caption: "photo 3" }
-  ];
 
-  const fullAsciiArt = `⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⢠⡾⠲⠶⣤⣀⣠⣤⣤⣤⡿⠛⠿⡴⠾⠛⢻⡆⠀⠀⠀
-⠀⠀⠀⣼⠁⠀⠀⠀⠉⠁⠀⢀⣿⠐⡿⣿⠿⣶⣤⣤⣷⡀⠀⠀
-⠀⠀⠀⢹⡶⠀⠀⠀⠀⠀⠀⠈⢯⣡⣿⣿⣀⣰⣿⣦⢂⡏⠀⠀
-⠀⠀⢀⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠹⣍⣭⣾⠁⠀⠀
-⠀⣀⣸⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣸⣧⣤⡀
-⠈⠉⠹⣏⡁⠀⢸⣿⠀⠀⠀⢀⡀⠀⠀⠀⣿⠆⠀⢀⣸⣇⣀⠀
-⠀⠐⠋⢻⣅⡄⢀⣀⣀⡀⠀⠯⠽⠂⢀⣀⣀⡀⠀⣤⣿⠀⠉⠀
-⠀⠀⠴⠛⠙⣳⠋⠉⠉⠙⣆⠀⠀⢰⡟⠉⠈⠙⢷⠟⠈⠙⠂⠀
-⠀⠀⠀⠀⠀⢻⣄⣠⣤⣴⠟⠛⠛⠛⢧⣤⣤⣀⡾⠀⠀⠀⠀⠀`;
+  // ASCII art kaomoji (isi & posisinya diatur di src/config/asciiArt.ts)
+  const fullAsciiArt = ASCII_GLYPHS.map((g) => g.ch).join('');
 
   // Typewriter effect for ASCII art
   useEffect(() => {
     let currentIndex = 0;
-    const typingSpeed = 3; // Speed in milliseconds
+    const typingSpeed = 55; // Speed in milliseconds per character
 
     const typeWriter = () => {
       if (currentIndex < fullAsciiArt.length) {
@@ -97,52 +83,6 @@ const About = () => {
 
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  // Focus management for modal
-  useEffect(() => {
-    if (showProfileModal) {
-      // Focus the modal when it opens
-      const timer = setTimeout(() => {
-        const modal = document.querySelector('[role="region"][aria-label="Profile photo carousel"]') as HTMLElement;
-        if (modal) {
-          modal.focus();
-        }
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [showProfileModal]);
-
-  // Carousel navigation functions
-  const goToPrevious = () => {
-    setCurrentImageIndex((prevIndex) =>
-      prevIndex === 0 ? profileImages.length - 1 : prevIndex - 1
-    );
-  };
-
-  const goToNext = () => {
-    setCurrentImageIndex((prevIndex) =>
-      prevIndex === profileImages.length - 1 ? 0 : prevIndex + 1
-    );
-  };
-
-  const goToSlide = (index: number) => {
-    setCurrentImageIndex(index);
-  };
-
-  // Keyboard navigation
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'ArrowLeft') {
-      goToPrevious();
-    } else if (e.key === 'ArrowRight') {
-      goToNext();
-    } else if (e.key === 'Escape') {
-      setIsClosing(true);
-      setTimeout(() => {
-        setShowProfileModal(false);
-        setIsClosing(false);
-      }, 300);
-    }
-  };
 
   const stickers = [
     { id: 1, image: stickerImages[0], initialX: -180, initialY: -80, finalX: -550, finalY: -100, mobileInitialX: -120, mobileInitialY: -60, mobileFinalX: -250, mobileFinalY: -80 },
@@ -207,46 +147,114 @@ const About = () => {
       maxWidth: '100vw',
       contain: 'layout style'
     }}>
-      {/* Hero Section */}
-      <div className="py-10 md:py-20">
+
+      {/* Animasi nama sebagai satu kesatuan, bukan per huruf */}
+      <style>{`
+        @keyframes nameReveal {
+          from { opacity: 0; transform: translateY(22px); filter: blur(5px); }
+          to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+        .animate-name-reveal { animation: nameReveal 1.4s ease-out both; }
+        @keyframes introLetter {
+          from { opacity: 0; transform: translateY(5px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .intro-letter {
+          display: inline-block;
+          opacity: 0;
+          animation: introLetter 0.2s ease-out forwards;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .animate-name-reveal { animation: none; }
+          .intro-letter { animation: none; opacity: 1; }
+        }
+      `}</style>
+
+      {/* Hero Section: nama di kiri, kucing ASCII di kanan */}
+      <div className="pt-6 pb-1 md:pt-10 md:pb-2">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="flex flex-col md:flex-row justify-between items-start max-w-6xl mx-auto gap-8">
-            <div className="text-left w-full md:w-auto">
-              <div className="ascii-container justify-start text-3xl md:text-4xl lg:text-5xl">
-                <AsciiMorphText text="Hi, I'm Your Name" />
-              </div>
-              <div className="hero-subtitle justify-start text-base md:text-lg lg:text-xl mt-2">
+          <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(260px,330px)] items-center gap-4 lg:gap-6">
+            <div className="min-w-0 text-left">
+              <h1
+                className="animate-name-reveal font-bold tracking-wide"
+                style={{
+                  fontFamily: 'monospace',
+                  fontSize: 'clamp(18px, 2.4vw, 32px)',
+                  lineHeight: '1.3',
+                  color: isDarkMode ? themeColors.primary : themeColors.colors.pink[500],
+                }}
+              >
+                Hi, I'm Putri Febrihandini Harmonia
+              </h1>
+
+              <div className="hero-subtitle justify-start text-base md:text-lg mt-3">
                 <div className="flex flex-wrap items-center justify-start">
-                  <span className={isDarkMode ? 'hero-subtitle-dark' : 'hero-subtitle-light'}>I am a&nbsp;</span>
-                  <TypewriterCarousel roles={roles} className={isDarkMode ? 'hero-subtitle-dark' : 'hero-subtitle-light'} />
+                  <span className={isDarkMode ? 'hero-subtitle-dark' : 'hero-subtitle-light'}>
+                    I am an&nbsp;
+                  </span>
+                  {asciiText.length >= fullAsciiArt.length && (
+                    <TypewriterCarousel
+                      roles={roles}
+                      className={isDarkMode ? 'hero-subtitle-dark' : 'hero-subtitle-light'}
+                    />
+                  )}
                 </div>
               </div>
+
               <div className="hero-buttons flex justify-start gap-3 mt-4">
                 <button
                   className="hero-action-btn text-sm md:text-base px-4 py-2 md:px-5 md:py-2.5"
-                  onClick={() => {
-                    window.open('/resume.pdf', '_blank');
-                  }}
+                  onClick={() => window.open('/resume.pdf', '_blank')}
                 >
                   Resume →
                 </button>
-                <Link
-                  to="/contact"
-                  className="hero-action-btn text-sm md:text-base px-4 py-2 md:px-5 md:py-2.5"
-                >
+                <Link to="/contact" className="hero-action-btn text-sm md:text-base px-4 py-2 md:px-5 md:py-2.5">
                   Contact →
                 </Link>
               </div>
             </div>
-            <div className="hidden md:block" style={{ fontSize: '0.8rem', lineHeight: '1', fontFamily: 'monospace', minHeight: '150px', color: isDarkMode ? themeColors.primary : themeColors.colors.pink[500] }}>
-              <pre>{asciiText}</pre>
+
+            {/* Kucing ASCII di kanan pada desktop, tanpa ruang kosong berlebihan */}
+            <div className="flex flex-col items-center lg:items-end justify-center min-w-0">
+              <div
+                className="w-full text-center lg:text-right mb-1"
+                style={{
+                  color: isDarkMode ? themeColors.primary : themeColors.colors.pink[500],
+                  fontFamily: 'monospace',
+                  fontSize: 'clamp(10px, 1vw, 13px)',
+                  fontWeight: 700,
+                  letterSpacing: '0.04em',
+                  lineHeight: 1.5,
+                }}
+              >
+                {['let me introduce myself'].map((line, lineIndex) => (
+                  <span className="block" key={lineIndex}>
+                    {Array.from(line).map((letter, letterIndex) => (
+                      <span
+                        key={letterIndex}
+                        className="intro-letter"
+                        style={{
+                          animationDelay: `${0.3 + (lineIndex === 0 ? 0 : 7) * 0.065 + letterIndex * 0.065}s`,
+                          whiteSpace: 'pre',
+                        }}
+                      >
+                        {letter}
+                      </span>
+                    ))}
+                  </span>
+                ))}
+              </div>
+              <AsciiKaomoji
+                visibleCount={asciiText.length}
+                color={isDarkMode ? themeColors.primary : themeColors.colors.pink[500]}
+              />
             </div>
           </div>
         </div>
       </div>
 
       {/* About Section with Stickers and Journal */}
-      <div className="py-8 md:py-12" style={{
+      <div className="pt-2 pb-8 md:pt-3 md:pb-10" style={{
         background: isDarkMode
           ? 'transparent'
           : `linear-gradient(180deg, transparent 0%, ${withAlpha(themeColors.colors.pink[50], 0.5)} 50%, ${themeColors.colors.pink[25]} 100%)`
@@ -286,8 +294,7 @@ const About = () => {
                 <img
                   src={aboutMeJournalWebp400}
                   alt="Journal page with handwritten personal introduction and interests"
-                  className="w-full h-auto object-contain cursor-pointer hover:opacity-90 transition-opacity"
-                  onClick={() => setShowProfileModal(true)}
+                  className="w-full h-auto object-contain"
                   width="400"
                   height="300"
                   fetchPriority="high"
@@ -295,155 +302,84 @@ const About = () => {
                   style={{ maxWidth: '100%', height: 'auto' }}
                 />
               </picture>
+
+              {/* Scrapbook journal: left photo, right handwritten summary */}
+              <div
+                className="absolute z-30 grid grid-cols-2 items-center pointer-events-none"
+                style={{ left: '8%', right: '8%', top: '9%', bottom: '10%', columnGap: '11%' }}
+              >
+                {/* Left page: larger textured scrapbook frame, no caption */}
+                <div className="h-full min-w-0 flex items-center justify-center">
+                  <div className="relative w-[94%] max-w-[345px]" style={{ transform: 'rotate(-5deg)' }}>
+                    {/* Paper ephemera tucked behind the frame */}
+                    <div
+                      className="absolute -top-[5%] left-[6%] w-[31%] h-[18%] -rotate-[17deg]"
+                      style={{ background: 'repeating-linear-gradient(0deg,#dfb5a5 0px,#dfb5a5 2px,#f6d8c7 2px,#f6d8c7 6px)', boxShadow: '0 2px 5px #5e34442b' }}
+                    />
+                    <div
+                      className="relative p-[5px] sm:p-[8px] md:p-[12px] pb-[12px] sm:pb-[18px] md:pb-[24px]"
+                      style={{
+                        backgroundColor: '#c2a4a9',
+                        backgroundImage: 'radial-gradient(#fff6e8 0.7px,transparent 0.9px), radial-gradient(#80616b 0.7px,transparent 1px)',
+                        backgroundSize: '6px 6px, 9px 9px',
+                        border: 'clamp(3px, .7vw, 8px) solid #f9f1e9',
+                        boxShadow: '0 9px 18px #4f2b3940, 0 2px 4px #4f2b3926',
+                      }}
+                    >
+                      <div className="relative border-[3px] sm:border-[5px] border-[#f9f3eb] overflow-hidden">
+                        <img
+                          src={journalPortrait}
+                          alt="Foto Putri Febrihandini Harmonia"
+                          className="block w-full aspect-[4/5] object-cover object-center"
+                          loading="lazy"
+                        />
+                      </div>
+                      {/* Decorative gold stars on scrapbook border */}
+                      <span aria-hidden="true" className="absolute -top-[5%] left-[15%] text-[#f8e5a4] text-[clamp(10px,2vw,24px)] drop-shadow-sm">★</span>
+                      <span aria-hidden="true" className="absolute top-[13%] -right-[5%] text-[#f8e5a4] text-[clamp(11px,2.2vw,27px)] drop-shadow-sm">★</span>
+                      <span aria-hidden="true" className="absolute bottom-[6%] left-[12%] text-[#f8e5a4] text-[clamp(10px,1.9vw,23px)] drop-shadow-sm">★</span>
+                      <span aria-hidden="true" className="absolute -bottom-[4%] right-[13%] text-[#f8e5a4] text-[clamp(11px,2vw,25px)] drop-shadow-sm">★</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right page: handwriting-inspired typography */}
+                <div className="min-w-0 h-full flex flex-col justify-center" style={{ transform: 'rotate(-1deg)' }}>
+                  <h2
+                    className="mb-2 md:mb-4"
+                    style={{
+                      fontFamily: '"Comic Sans MS", "Segoe Print", "Bradley Hand", cursive',
+                      fontSize: 'clamp(13px, 2.5vw, 29px)',
+                      fontWeight: 500,
+                      color: '#b66d82',
+                    }}
+                  >
+                    About Me ♡
+                  </h2>
+                  <p
+                    style={{
+                      fontFamily: '"Segoe Print", "Comic Sans MS", "Bradley Hand", cursive',
+                      fontSize: 'clamp(8px, 1.14vw, 16px)',
+                      lineHeight: 1.7,
+                      letterSpacing: '0.005em',
+                      color: '#51474a',
+                      overflowWrap: 'break-word',
+                    }}
+                  >
+                    I'm Putri, an Industrial Engineering graduate from Universitas Islam Bandung.
+                    I'm responsible, disciplined, and detail oriented, with an analytical and
+                    structured approach to problem solving. I have hands-on experience as an
+                    Information Systems and Decisions Laboratory Assistant and as General Treasurer
+                    of KMTI Unisba. My skills include document management, data analysis,
+                    business process improvement, software development, and financial reporting.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Profile Modal */}
-      {showProfileModal && (
-        <div
-          className={`fixed inset-0 z-50 flex items-center justify-center p-2 md:p-4 ${isClosing ? 'animate-fadeOut' : 'animate-fadeIn'}`}
-          style={{ backgroundColor: themeColors.background.overlay }}
-          onClick={() => {
-            setIsClosing(true);
-            setTimeout(() => {
-              setShowProfileModal(false);
-              setIsClosing(false);
-            }, 300);
-          }}
-          onKeyDown={handleKeyDown}
-          tabIndex={-1}
-        >
-          <div className={`relative w-full max-w-sm md:max-w-md ${isClosing ? 'animate-scaleOut' : 'animate-scaleIn'}`} onClick={(e) => e.stopPropagation()}>
-            {/* Carousel Container */}
-            <div
-              className="relative w-full bg-black rounded-lg shadow-2xl overflow-hidden focus:outline-none"
-              style={{
-                aspectRatio: '4/5',
-                minHeight: '300px',
-                maxHeight: '80vh'
-              }}
-              role="region"
-              aria-label="Profile photo carousel"
-              aria-live="polite"
-              tabIndex={0}
-              onKeyDown={handleKeyDown}
-            >
-              {/* Image Display */}
-              <div className="relative w-full h-full flex items-center justify-center">
-                {profileImages.map((image, index) => (
-                  <img
-                    key={index}
-                    src={image.src}
-                    alt={`Profile photo ${index + 1}`}
-                    className={`absolute w-full h-full object-contain transition-opacity duration-500 ${
-                      index === currentImageIndex ? 'opacity-100' : 'opacity-0'
-                    }`}
-                    loading="eager"
-                    onError={(e) => {
-                      console.error('Image failed to load:', image.src);
-                      e.currentTarget.style.display = 'block';
-                      e.currentTarget.style.backgroundColor = '#f3f4f6';
-                    }}
-                  />
-                ))}
-              </div>
-
-              {/* Navigation Arrows */}
-              <button
-                onClick={goToPrevious}
-                className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full shadow-lg transition-all hover:scale-110 focus:outline-none focus:ring-2 focus:ring-pink-300"
-                style={{
-                  backgroundColor: isDarkMode ? withAlpha(themeColors.colors.dark[700], 0.9) : withAlpha(themeColors.colors.white, 0.8),
-                  color: isDarkMode ? themeColors.colors.white : themeColors.colors.dark[700],
-                  border: isDarkMode ? '2px solid #374151' : 'none',
-                  boxShadow: isDarkMode ? `0 4px 12px ${withAlpha(themeColors.colors.black, 0.6)}` : undefined
-                } as React.CSSProperties}
-                aria-label="Previous image"
-              >
-                <ChevronLeft className="h-6 w-6" />
-              </button>
-
-              <button
-                onClick={goToNext}
-                className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full shadow-lg transition-all hover:scale-110 focus:outline-none focus:ring-2 focus:ring-pink-300"
-                style={{
-                  backgroundColor: isDarkMode ? withAlpha(themeColors.colors.dark[700], 0.9) : withAlpha(themeColors.colors.white, 0.8),
-                  color: isDarkMode ? themeColors.colors.white : themeColors.colors.dark[700],
-                  border: isDarkMode ? '2px solid #374151' : 'none',
-                  boxShadow: isDarkMode ? `0 4px 12px ${withAlpha(themeColors.colors.black, 0.6)}` : undefined
-                } as React.CSSProperties}
-                aria-label="Next image"
-              >
-                <ChevronRight className="h-6 w-6" />
-              </button>
-
-              {/* Image Counter */}
-              <div className="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
-                {currentImageIndex + 1} / {profileImages.length}
-              </div>
-
-              {/* Caption */}
-              <div className="absolute bottom-4 right-4 bg-black/70 text-white px-4 py-2 rounded-lg text-base font-medium max-w-[220px] text-center">
-                {profileImages[currentImageIndex].caption}
-              </div>
-            </div>
-
-            {/* Dots Indicator */}
-            <div className="flex justify-center gap-0 mt-4">
-              {profileImages.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => goToSlide(index)}
-                  className="transition-all focus:outline-none focus:ring-2 focus:ring-pink-300 focus:ring-offset-2 flex items-center justify-center"
-                  style={{
-                    minWidth: '44px',
-                    minHeight: '44px',
-                    padding: '0',
-                    backgroundColor: 'transparent',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  } as React.CSSProperties}
-                  aria-label={`Go to image ${index + 1}`}
-                >
-                  <span
-                    className="rounded-full transition-all"
-                    style={{
-                      width: index === currentImageIndex ? '32px' : '12px',
-                      height: '12px',
-                      backgroundColor: index === currentImageIndex ? themeColors.colors.pink[300] : (isDarkMode ? withAlpha(themeColors.colors.pink[300], 0.3) : themeColors.colors.dark[300])
-                    }}
-                  />
-                </button>
-              ))}
-            </div>
-
-            {/* Close Button */}
-            <button
-              className="absolute top-4 right-4 text-white rounded-full w-11 h-11 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:rotate-90"
-              style={{ 
-                backgroundColor: themeColors.colors.pink[500],
-                transition: 'all 0.3s'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = themeColors.colors.pink[600]}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = themeColors.colors.pink[500]}
-              aria-label="Close modal"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsClosing(true);
-                setTimeout(() => {
-                  setShowProfileModal(false);
-                  setIsClosing(false);
-                }, 300);
-              }}
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-      )}
     </section>
   );
 };
